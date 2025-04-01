@@ -1,4 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Text;
+using System.Text.Json;
+
 class Program
 {
     static void Main(string[] args)
@@ -6,7 +9,7 @@ class Program
         FileOrganizer fileOrganizer = new();
         while (true)
         {
-            fileOrganizer.Init();
+            fileOrganizer.Loop();
         }
     }
 }
@@ -15,13 +18,42 @@ class FileOrganizer
 {
     private string? folderDirectory = "";
     private Dictionary<string, string> filePair = new();
-    public FileOrganizer()
+    private string filePairPath = "filepair.json";
+    private JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+    public FileOrganizer() 
     {
+        Init();
+    }
+
+    public void Init()
+    {
+        if (!File.Exists(filePairPath))
+        {
+            Console.WriteLine($"File not found, creating new file named {filePairPath}");
+            var emptyFilePair = JsonSerializer.Serialize(new Dictionary<string, string>(), jsonOptions);
+            using (FileStream fs = File.Create(filePairPath))
+            {
+                Byte[] info = new UTF8Encoding(true).GetBytes(emptyFilePair);
+                fs.Write(info);
+            }
+        }
+
+        string fileContent = File.ReadAllText(filePairPath);
+        var jsonFilePair = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+
+        if (jsonFilePair == null)
+        {
+            Console.WriteLine("json file for file pair does not exist");
+            return;
+        }
+
+        filePair = jsonFilePair;
+
         Console.WriteLine("**********super file organizer****************");
         Console.WriteLine("To see all possible commands enter help");
     }
 
-    public void Init()
+    public void Loop()
     {
         Console.WriteLine("");
         Console.WriteLine("**************");
@@ -97,6 +129,7 @@ class FileOrganizer
             }
             string fileName = command[1];
             string folderDir = command[2];
+
             //check if folderDirectory exists
             if (!Directory.Exists(folderDir))
             {
