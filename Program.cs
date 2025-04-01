@@ -20,6 +20,7 @@ class FileOrganizer
         Console.WriteLine("**********super file organizer****************");
         Console.WriteLine("To see all possible commands enter help");
     }
+
     public void Init()
     {
         Console.WriteLine("");
@@ -56,7 +57,7 @@ class FileOrganizer
         Console.WriteLine("COMMANDS:");
         Console.WriteLine("  set filename [name-to-look-for] to [folder-directory]");
         Console.WriteLine("  --to set a name to automatically move to a folder-director]");
-        Console.WriteLine("  set folder-directory [folder-directory]");
+        Console.WriteLine("  set orgdir [folder-directory]");
         Console.WriteLine("  --to set a folder-directory to organize, where the files will be taken from]");
     }
     
@@ -73,12 +74,13 @@ class FileOrganizer
             Help();
             return;
         }
+
         switch (command[1])
         {
             case "filename":
                 setFileName(command);
                 break;
-            case "folder-directory":
+            case "orgdir":
                 setFolderDirectory(command);
                 break;
             default:
@@ -94,19 +96,31 @@ class FileOrganizer
                 return;
             }
             string fileName = command[1];
-            string folderName = command[2];
-
-            filePair.Add(fileName, folderName);
+            string folderDir = command[2];
+            //check if folderDirectory exists
+            if (!Directory.Exists(folderDir))
+            {
+                Console.WriteLine("folder path does not exist");
+                return;
+            }
+            filePair.Add(fileName, folderDir);
         }
 
         void setFolderDirectory(string[] command)
         {
             if (command.Length != 3)
             {
-                Console.WriteLine("set folder-directory requires 1 parameter: folder-directory");
+                Console.WriteLine("set orgdir requires 1 parameter: folder-directory");
                 return;
             }
-            folderDirectory = command[1];
+
+            folderDirectory = command[2];
+
+            if (!Directory.Exists(folderDirectory))
+            {
+                Console.WriteLine($"the path {folderDirectory} does not exist");
+                return;
+            }
             Console.WriteLine($"successfully set folder directory to: {folderDirectory}");
             // have a checker if directory exists
         }
@@ -132,5 +146,5 @@ class FileOrganizer
         }
     }
 }
-// 1. set filename [name-to-look-for] to [folder-directory]
+// 1. set filename [name-to-look-for] to [orgdir]
 // 2. display-config
