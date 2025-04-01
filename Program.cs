@@ -28,19 +28,10 @@ class FileOrganizer
 
     public void Init()
     {
-        //if (!File.Exists(filePairPath))
-        //{
-        //    Console.WriteLine($"File not found, creating new file named {filePairPath}");
-        //    var emptyFilePair = JsonSerializer.Serialize(new Dictionary<string, string>(), jsonOptions);
-        //    using (FileStream fs = File.Create(filePairPath))
-        //    {
-        //        Byte[] info = new UTF8Encoding(true).GetBytes(emptyFilePair);
-        //        fs.Write(info);
-        //    }
-        //}
         LoadJson<Dictionary<string, string>>(filePairPath);
         LoadJson<string>(folderOrgPath);
 
+        // copy json content for filepair
         string fpairJsonContent = File.ReadAllText(filePairPath);
         var jsonFilePair = JsonSerializer.Deserialize<Dictionary<string, string>>(fpairJsonContent);
         if (jsonFilePair == null)
@@ -50,18 +41,7 @@ class FileOrganizer
         }
         filePair = jsonFilePair;
 
-
-        //if (!File.Exists(folderOrgPath))
-        //{
-        //    Console.WriteLine($"File not found, creating new file named {folderOrgPath}");
-        //    var emptyFolderOrg = JsonSerializer.Serialize("", jsonOptions);
-        //    using (FileStream fs = File.Create(folderOrgPath))
-        //    { 
-        //        Byte[] info = new UTF8Encoding(true).GetBytes(emptyFolderOrg);
-        //        fs.Write(info);
-        //    }
-        //}
-
+        // copy json content for orgdir or folderorg
         string forgJsonContent = File.ReadAllText(folderOrgPath);
         var jsonFolderOrg = JsonSerializer.Deserialize<string>(forgJsonContent);
         if (jsonFolderOrg == null)
@@ -125,17 +105,49 @@ class FileOrganizer
             case "remove":
                 RemoveFilePair(commands);
                 break;
+            case "start":
+                StartOrg();
+                break;
             default:
                 Error();
                 break;
         }
     }
 
+    public void StartOrg()
+    {
+        if (folderDirectory == null)
+        {
+            Console.WriteLine("folder directory is not set");
+            return;
+        }
+
+        if (filePair.Count == 0)
+        {
+            Console.WriteLine("There is no set file to organize");
+            return;
+        }
+
+        string[] filesInDir = Directory.GetFiles(folderDirectory);
+
+        for (int i = 0; i < filesInDir.Length; i++)
+        {
+            foreach (KeyValuePair<string, string> file in filePair) 
+            {
+                if (filesInDir[i].IndexOf(file.Key, 0, filesInDir[i].Length-1) != -1)
+                {
+                    Console.WriteLine($"{file.Key} -> {filesInDir[i]}");
+                }
+            }
+        }
+
+    }
+
     public void Help()
     {
         Console.WriteLine("COMMANDS:");
         Console.WriteLine("  set filename [name-to-look-for] to [folder-directory]");
-        Console.WriteLine("  --to set a name to automatically move to a folder-director]");
+        Console.WriteLine("  --to set a name to automatically move to a folder-director");
         Console.WriteLine("  set orgdir [folder-directory]");
         Console.WriteLine("  --to set a folder-directory to organize, where the files will be taken from]");
     }
