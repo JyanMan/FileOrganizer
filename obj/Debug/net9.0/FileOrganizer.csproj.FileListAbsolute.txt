@@ -12,3 +12,4 @@ C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\De
 C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Debug\net9.0\FileOrganizer.pdb
 C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Debug\net9.0\FileOrganizer.genruntimeconfig.cache
 C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Debug\net9.0\ref\FileOrganizer.dll
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Debug\net9.0\FileOrganizer.sourcelink.json

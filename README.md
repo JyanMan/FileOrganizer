@@ -5,6 +5,10 @@ as my downloads folder is getting way too messy
 1. set config for file names and folder directories (where each file with name will be directed to)
 2. specify folder to search for the files 
 
+## How to install
+1. just download the folder within \bin\release\net9.0\FileOrganizer
+2. Open FileOrganizer.exe to start
+
 ## How to use
 1. set filename [name-to-look-for] to [folder-directory]
 2. display-config
