@@ -19,6 +19,7 @@ class FileOrganizer
     private string? folderDirectory = "";
     private Dictionary<string, string> filePair = new();
     private string filePairPath = "filepair.json";
+    private string folderOrgPath = "setfolderorg.json";
     private JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
     public FileOrganizer() 
     {
@@ -27,30 +28,73 @@ class FileOrganizer
 
     public void Init()
     {
-        if (!File.Exists(filePairPath))
-        {
-            Console.WriteLine($"File not found, creating new file named {filePairPath}");
-            var emptyFilePair = JsonSerializer.Serialize(new Dictionary<string, string>(), jsonOptions);
-            using (FileStream fs = File.Create(filePairPath))
-            {
-                Byte[] info = new UTF8Encoding(true).GetBytes(emptyFilePair);
-                fs.Write(info);
-            }
-        }
+        //if (!File.Exists(filePairPath))
+        //{
+        //    Console.WriteLine($"File not found, creating new file named {filePairPath}");
+        //    var emptyFilePair = JsonSerializer.Serialize(new Dictionary<string, string>(), jsonOptions);
+        //    using (FileStream fs = File.Create(filePairPath))
+        //    {
+        //        Byte[] info = new UTF8Encoding(true).GetBytes(emptyFilePair);
+        //        fs.Write(info);
+        //    }
+        //}
+        LoadJson<Dictionary<string, string>>(filePairPath);
+        LoadJson<string>(folderOrgPath);
 
-        string fileContent = File.ReadAllText(filePairPath);
-        var jsonFilePair = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
-
+        string fpairJsonContent = File.ReadAllText(filePairPath);
+        var jsonFilePair = JsonSerializer.Deserialize<Dictionary<string, string>>(fpairJsonContent);
         if (jsonFilePair == null)
         {
-            Console.WriteLine("json file for file pair does not exist");
+            Console.WriteLine($"json file {filePairPath} for file pair does not exist");
             return;
         }
-
         filePair = jsonFilePair;
+
+
+        //if (!File.Exists(folderOrgPath))
+        //{
+        //    Console.WriteLine($"File not found, creating new file named {folderOrgPath}");
+        //    var emptyFolderOrg = JsonSerializer.Serialize("", jsonOptions);
+        //    using (FileStream fs = File.Create(folderOrgPath))
+        //    { 
+        //        Byte[] info = new UTF8Encoding(true).GetBytes(emptyFolderOrg);
+        //        fs.Write(info);
+        //    }
+        //}
+
+        string forgJsonContent = File.ReadAllText(folderOrgPath);
+        var jsonFolderOrg = JsonSerializer.Deserialize<string>(forgJsonContent);
+        if (jsonFolderOrg == null)
+        {
+            Console.WriteLine($"json {folderOrgPath} does not exist");
+            return;
+        }
+        folderDirectory = jsonFolderOrg;
 
         Console.WriteLine("**********super file organizer****************");
         Console.WriteLine("To see all possible commands enter help");
+
+        void LoadJson<T>(string jsonDir)
+        {
+            if (!File.Exists(jsonDir))
+            {
+                Type type = typeof(T);
+                Console.WriteLine($"File not found, creating new file named {jsonDir}");
+                T newEmpty;
+                if (typeof(T) == typeof(string))
+                {
+                    newEmpty = (T)(object)"";
+                }
+                else 
+                    newEmpty = Activator.CreateInstance<T>();
+                var newDir = JsonSerializer.Serialize(newEmpty, jsonOptions);
+                using (FileStream fs = File.Create(jsonDir))
+                { 
+                    Byte[] info = new UTF8Encoding(true).GetBytes(newDir);
+                    fs.Write(info);
+                }
+            }
+        }
     }
 
     public void Loop()
@@ -77,6 +121,9 @@ class FileOrganizer
                 break;
             case "config":
                 DisplayConfig(commands);
+                break;
+            case "remove":
+                RemoveFilePair(commands);
                 break;
             default:
                 Error();
@@ -127,16 +174,23 @@ class FileOrganizer
                 Console.WriteLine("set filename requires 2 parameters: file-name, folder-directory");
                 return;
             }
-            string fileName = command[1];
-            string folderDir = command[2];
+            string fileName = command[2];
+            string folderDir = command[3];
 
             //check if folderDirectory exists
             if (!Directory.Exists(folderDir))
             {
-                Console.WriteLine("folder path does not exist");
+                Console.WriteLine($"folder path {folderDir} does not exist");
                 return;
             }
-            filePair.Add(fileName, folderDir);
+
+            if (!filePair.TryAdd(fileName, folderDir))
+            {
+                Console.WriteLine("happens");
+                filePair[fileName] = folderDir;
+            }
+
+            UpdateJsons();
         }
 
         void setFolderDirectory(string[] command)
@@ -154,9 +208,38 @@ class FileOrganizer
                 Console.WriteLine($"the path {folderDirectory} does not exist");
                 return;
             }
+
             Console.WriteLine($"successfully set folder directory to: {folderDirectory}");
-            // have a checker if directory exists
+
+            UpdateJsons();
         }
+    }
+
+    public void RemoveFilePair(string[] command)
+    {
+        try 
+        {
+            filePair.Remove(command[1]);
+        }
+        catch (Exception e) 
+        {
+            if (command.Length != 2)
+            {
+                Console.WriteLine("Remove has 1 parameter filename");
+                return;
+            }
+            Console.WriteLine("filename is not added to filepair");
+            Console.WriteLine(e.ToString());
+        }
+        UpdateJsons();
+    }
+
+    public void UpdateJsons()
+    {
+        string jsonFilePair = JsonSerializer.Serialize(filePair, jsonOptions);
+        File.WriteAllText(filePairPath, jsonFilePair);
+        string jsonFolderOrg = JsonSerializer.Serialize(folderDirectory, jsonOptions);
+        File.WriteAllText(folderOrgPath, jsonFolderOrg);
     }
 
     public void DisplayConfig(string[] command)
