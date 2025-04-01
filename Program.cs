@@ -132,11 +132,16 @@ class FileOrganizer
 
         for (int i = 0; i < filesInDir.Length; i++)
         {
+            findFile(filesInDir[i]);
+        }
+
+        void findFile(string fileName)
+        {
             foreach (KeyValuePair<string, string> file in filePair) 
             {
-                if (filesInDir[i].IndexOf(file.Key, 0, filesInDir[i].Length-1) != -1)
+                if (fileName.IndexOf(file.Key, 0, fileName.Length-1) != -1)
                 {
-                    Console.WriteLine($"{file.Key} -> {filesInDir[i]}");
+                    Console.WriteLine($"{file.Key} -> {fileName}");
                 }
             }
         }
