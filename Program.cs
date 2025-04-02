@@ -1,4 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
+// TASKS FOR THIS SOFTWARE
+// add undo move files
 using System.Text;
 using System.Text.Json;
 
@@ -135,34 +137,33 @@ class FileOrganizer
             findFile(filesInDir[i]);
         }
 
-        void findFile(string fileName)
+        void findFile(string filePath)
         {
+            bool movedFile = false;
+            Console.WriteLine("name to look for     --     found file-path     ->     new directory for file");
             foreach (KeyValuePair<string, string> file in filePair) 
             {
-                int index = fileName.IndexOf(folderDirectory);
-                string cleanPath = (index < 0)
-                    ? fileName
-                    : fileName.Remove(index, folderDirectory.Length);
-                //Console.WriteLine($"{fileName}");
+                int index = filePath.IndexOf(folderDirectory);
+                string fileName = (index < 0)
+                    ? filePath
+                    : filePath.Remove(index, folderDirectory.Length);
+
                 if (fileName.IndexOf(file.Key, 0, fileName.Length) != -1)
                 {
-                    Console.WriteLine($"{file.Key} -> {fileName}");
-                    //Console.WriteLine(file.Value + cleanPath);
-                    File.Move(fileName, file.Value + cleanPath);
+                    movedFile = true;
+                    string newDirectory = file.Value + fileName;
+                    Console.WriteLine($"{file.Key} -- {filePath} ->  {newDirectory}");
+                    File.Move(filePath, newDirectory);
                 }
+            }
+
+            if (!movedFile)
+            {
+                Console.WriteLine("no files found");
             }
         }
     }
-
-    public void Help()
-    {
-        Console.WriteLine("COMMANDS:");
-        Console.WriteLine("  set filename [name-to-look-for] to [folder-directory]");
-        Console.WriteLine("  --to set a name to automatically move to a folder-director");
-        Console.WriteLine("  set orgdir [folder-directory]");
-        Console.WriteLine("  --to set a folder-directory to organize, where the files will be taken from]");
-    }
-    
+ 
     public void Error()
     {
         Console.WriteLine("INVALID INPUT");
@@ -302,6 +303,13 @@ class FileOrganizer
         folderDirectory = "";
         UpdateJsons();
     }
+
+    public static void Help()
+    {
+        Console.WriteLine("COMMANDS:");
+        Console.WriteLine("  set filename [name-to-look-for] to [folder-directory]");
+        Console.WriteLine("  --to set a name to automatically move to a folder-director");
+        Console.WriteLine("  set orgdir [folder-directory]");
+        Console.WriteLine("  --to set a folder-directory to organize, where the files will be taken from]");
+    }
 }
-// 1. set filename [name-to-look-for] to [orgdir]
-// 2. display-config
