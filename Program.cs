@@ -139,13 +139,19 @@ class FileOrganizer
         {
             foreach (KeyValuePair<string, string> file in filePair) 
             {
-                if (fileName.IndexOf(file.Key, 0, fileName.Length-1) != -1)
+                int index = fileName.IndexOf(folderDirectory);
+                string cleanPath = (index < 0)
+                    ? fileName
+                    : fileName.Remove(index, folderDirectory.Length);
+                //Console.WriteLine($"{fileName}");
+                if (fileName.IndexOf(file.Key, 0, fileName.Length) != -1)
                 {
                     Console.WriteLine($"{file.Key} -> {fileName}");
+                    //Console.WriteLine(file.Value + cleanPath);
+                    File.Move(fileName, file.Value + cleanPath);
                 }
             }
         }
-
     }
 
     public void Help()
@@ -261,22 +267,40 @@ class FileOrganizer
 
     public void DisplayConfig(string[] command)
     {
+        if (command.Length == 2)
+        {
+            //checks if input clear as parameter
+            ClearConfig(command[1]);
+            return;
+        }
+
         if (folderDirectory != "" || folderDirectory != null)
             Console.WriteLine($"Directory of folder to organize: {folderDirectory}");
         else
             Console.WriteLine("Directory of folder to organize is not set");
 
-        Console.Write("fileNames and redirectories ");
         if (filePair.Count == 0)
         {
-            Console.WriteLine("not set");
+            Console.WriteLine("FileNames and redirectories not set");
             return;
         }
-        Console.WriteLine("");
+        Console.WriteLine("FileNames and redirectories: ");
         foreach (KeyValuePair<string, string> file in filePair)
         {
             Console.WriteLine(file.Key + " -> " + file.Value);
         }
+    }
+
+    public void ClearConfig(string parameter)
+    {
+        if (parameter != "clear")
+        {
+            Console.WriteLine("INVALID INPUT: config has 1 overload: config clear");
+            return;
+        }
+        filePair.Clear();
+        folderDirectory = "";
+        UpdateJsons();
     }
 }
 // 1. set filename [name-to-look-for] to [orgdir]
