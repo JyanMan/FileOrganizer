@@ -22,7 +22,9 @@ class FileOrganizer
     private Dictionary<string, string> filePair = new();
     private string filePairPath = "filepair.json";
     private string folderOrgPath = "setfolderorg.json";
+    private string movedFilePairsPath = "movedfilepairs.json";
     private JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+    private Dictionary<string, string> movedFilePairs = new(); //storage for file source to new directory when moved (startorg)
     public FileOrganizer() 
     {
         Init();
@@ -32,32 +34,18 @@ class FileOrganizer
     {
         LoadJson<Dictionary<string, string>>(filePairPath);
         LoadJson<string>(folderOrgPath);
+        LoadJson<Dictionary<string, string>>(movedFilePairsPath);
 
-        // copy json content for filepair
-        string fpairJsonContent = File.ReadAllText(filePairPath);
-        var jsonFilePair = JsonSerializer.Deserialize<Dictionary<string, string>>(fpairJsonContent);
-        if (jsonFilePair == null)
-        {
-            Console.WriteLine($"json file {filePairPath} for file pair does not exist");
-            return;
-        }
-        filePair = jsonFilePair;
-
-        // copy json content for orgdir or folderorg
-        string forgJsonContent = File.ReadAllText(folderOrgPath);
-        var jsonFolderOrg = JsonSerializer.Deserialize<string>(forgJsonContent);
-        if (jsonFolderOrg == null)
-        {
-            Console.WriteLine($"json {folderOrgPath} does not exist");
-            return;
-        }
-        folderDirectory = jsonFolderOrg;
+        filePair = CopyJsonContent<Dictionary<string, string>>(filePairPath);
+        folderDirectory = CopyJsonContent<string>(folderOrgPath);
+        movedFilePairs = CopyJsonContent<Dictionary<string, string>>(movedFilePairsPath);
 
         Console.WriteLine("**********super file organizer****************");
         Console.WriteLine("To see all possible commands enter help");
 
         void LoadJson<T>(string jsonDir)
         {
+            //if json file does not exist, created it and initialize its new default type;
             if (!File.Exists(jsonDir))
             {
                 Type type = typeof(T);
@@ -76,6 +64,18 @@ class FileOrganizer
                     fs.Write(info);
                 }
             }
+        }
+
+        T CopyJsonContent<T>(string filePath)
+        {
+            string jsonTextContent = File.ReadAllText(filePath);
+            var jsonData = JsonSerializer.Deserialize<T>(jsonTextContent);
+            if (jsonData == null)
+            {
+                Console.WriteLine($"json file {filePath} for file pair does not exist");
+                return default(T);
+            }
+            return jsonData;
         }
     }
 
@@ -109,6 +109,9 @@ class FileOrganizer
                 break;
             case "start":
                 StartOrg();
+                break;
+            case "undo":
+                UndoOrg();
                 break;
             default:
                 Error();
@@ -154,6 +157,7 @@ class FileOrganizer
                     string newDirectory = file.Value + fileName;
                     Console.WriteLine($"{file.Key} -- {filePath} ->  {newDirectory}");
                     File.Move(filePath, newDirectory);
+                    movedFilePairs.Add(filePath, newDirectory);
                 }
             }
 
@@ -161,6 +165,14 @@ class FileOrganizer
             {
                 Console.WriteLine("no files found");
             }
+        }
+    }
+
+    public void UndoOrg()
+    {
+        foreach (KeyValuePair<string, string> filePair in movedFilePairs)
+        {
+            Console.WriteLine(filePair.Key + " -> " + filePair.Value);
         }
     }
  
