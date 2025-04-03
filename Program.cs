@@ -135,6 +135,7 @@ class FileOrganizer
 
         string[] filesInDir = Directory.GetFiles(folderDirectory);
 
+        movedFilePairs.Clear();
         for (int i = 0; i < filesInDir.Length; i++)
         {
             findFile(filesInDir[i]);
@@ -157,6 +158,10 @@ class FileOrganizer
                     string newDirectory = file.Value + fileName;
                     Console.WriteLine($"{file.Key} -- {filePath} ->  {newDirectory}");
                     File.Move(filePath, newDirectory);
+                    if (movedFilePairs.TryGetValue(filePath, out string _))
+                    {
+                        continue;
+                    }
                     movedFilePairs.Add(filePath, newDirectory);
                 }
             }
@@ -165,14 +170,17 @@ class FileOrganizer
             {
                 Console.WriteLine("no files found");
             }
+            UpdateJsons();
         }
     }
 
     public void UndoOrg()
     {
+        Console.WriteLine("files undo");
         foreach (KeyValuePair<string, string> filePair in movedFilePairs)
         {
             Console.WriteLine(filePair.Key + " -> " + filePair.Value);
+            File.Move(filePair.Value, filePair.Key);
         }
     }
  
@@ -276,6 +284,8 @@ class FileOrganizer
         File.WriteAllText(filePairPath, jsonFilePair);
         string jsonFolderOrg = JsonSerializer.Serialize(folderDirectory, jsonOptions);
         File.WriteAllText(folderOrgPath, jsonFolderOrg);
+        string jsonMovedFP = JsonSerializer.Serialize(movedFilePairs, jsonOptions);
+        File.WriteAllText(movedFilePairsPath, jsonMovedFP);
     }
 
     public void DisplayConfig(string[] command)
