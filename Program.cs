@@ -16,12 +16,12 @@ class Program
 class FileOrganizer
 {
     private string? folderDirectory = "";
-    private Dictionary<string, string> filePair = new();
-    private string filePairPath = "jsons/filepair.json";
-    private string folderOrgPath = "jsons/setfolderorg.json";
-    private string movedFilePairsPath = "jsons/movedfilepairs.json";
-    private JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-    private Dictionary<string, string> movedFilePairs = new(); //storage for file source to new directory when moved (startorg)
+    private Dictionary<string, string> filePair = [];
+    private readonly string filePairPath = "jsons/filepair.json";
+    private readonly string folderOrgPath = "jsons/setfolderorg.json";
+    private readonly string movedFilePairsPath = "jsons/movedfilepairs.json";
+    private readonly JsonSerializerOptions jsonOptions = new () { WriteIndented = true };
+    private Dictionary<string, string> movedFilePairs = []; //storage for file source to new directory when moved (startorg)
     public FileOrganizer() 
     {
         Init();
