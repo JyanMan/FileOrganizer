@@ -1,7 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-// TASKS FOR THIS SOFTWARE
-// add undo move files
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
 class Program
@@ -20,9 +17,9 @@ class FileOrganizer
 {
     private string? folderDirectory = "";
     private Dictionary<string, string> filePair = new();
-    private string filePairPath = "filepair.json";
-    private string folderOrgPath = "setfolderorg.json";
-    private string movedFilePairsPath = "movedfilepairs.json";
+    private string filePairPath = "jsons/filepair.json";
+    private string folderOrgPath = "jsons/setfolderorg.json";
+    private string movedFilePairsPath = "jsons/movedfilepairs.json";
     private JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
     private Dictionary<string, string> movedFilePairs = new(); //storage for file source to new directory when moved (startorg)
     public FileOrganizer() 
@@ -48,15 +45,16 @@ class FileOrganizer
             //if json file does not exist, created it and initialize its new default type;
             if (!File.Exists(jsonDir))
             {
-                Type type = typeof(T);
                 Console.WriteLine($"File not found, creating new file named {jsonDir}");
                 T newEmpty;
+
                 if (typeof(T) == typeof(string))
                 {
                     newEmpty = (T)(object)"";
                 }
                 else 
                     newEmpty = Activator.CreateInstance<T>();
+
                 var newDir = JsonSerializer.Serialize(newEmpty, jsonOptions);
                 using (FileStream fs = File.Create(jsonDir))
                 { 
