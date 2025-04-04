@@ -1,0 +1,5 @@
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\publish\FileOrganizer.exe
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\publish\FileOrganizer.dll
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\publish\FileOrganizer.deps.json
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\publish\FileOrganizer.runtimeconfig.json
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\publish\FileOrganizer.pdb

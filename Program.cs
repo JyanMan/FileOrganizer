@@ -33,9 +33,9 @@ class FileOrganizer
         LoadJson<string>(folderOrgPath);
         LoadJson<Dictionary<string, string>>(movedFilePairsPath);
 
-        filePair = CopyJsonContent<Dictionary<string, string>>(filePairPath);
-        folderDirectory = CopyJsonContent<string>(folderOrgPath);
-        movedFilePairs = CopyJsonContent<Dictionary<string, string>>(movedFilePairsPath);
+        filePair = CopyJsonContent<Dictionary<string, string>>(filePairPath) ?? filePair;
+        folderDirectory = CopyJsonContent<string>(folderOrgPath) ?? folderDirectory;
+        movedFilePairs = CopyJsonContent<Dictionary<string, string>>(movedFilePairsPath) ?? movedFilePairs;
 
         Console.WriteLine("**********super file organizer****************");
         Console.WriteLine("To see all possible commands enter help");
@@ -64,7 +64,7 @@ class FileOrganizer
             }
         }
 
-        T CopyJsonContent<T>(string filePath)
+        T? CopyJsonContent<T>(string filePath)
         {
             string jsonTextContent = File.ReadAllText(filePath);
             var jsonData = JsonSerializer.Deserialize<T>(jsonTextContent);
@@ -156,10 +156,10 @@ class FileOrganizer
                     string newDirectory = file.Value + fileName;
                     Console.WriteLine($"{file.Key} -- {filePath} ->  {newDirectory}");
                     File.Move(filePath, newDirectory);
-                    if (movedFilePairs.TryGetValue(filePath, out string _))
-                    {
+
+                    if (movedFilePairs.Count == 0)
                         continue;
-                    }
+
                     movedFilePairs.Add(filePath, newDirectory);
                 }
             }

@@ -1,0 +1,15 @@
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\FileOrganizer.exe
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\FileOrganizer.deps.json
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\FileOrganizer.runtimeconfig.json
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\FileOrganizer.dll
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\bin\Release\net9.0\FileOrganizer.pdb
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\FileOrganizer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\FileOrganizer.AssemblyInfoInputs.cache
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\FileOrganizer.AssemblyInfo.cs
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\FileOrganizer.csproj.CoreCompileInputs.cache
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\FileOrganizer.sourcelink.json
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\FileOrganizer.dll
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\refint\FileOrganizer.dll
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\FileOrganizer.pdb
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\FileOrganizer.genruntimeconfig.cache
+C:\Users\Admin\OneDrive\Desktop\Jian J files\Programming\c#\FileOrganizer\obj\Release\net9.0\ref\FileOrganizer.dll
